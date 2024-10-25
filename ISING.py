@@ -137,7 +137,7 @@ plt.show()
 
 # Coniguración final
 plt.figure()
-plt.imshow(spinsfinal[-1], cmap='summer')  # Visualize the last configuration
+plt.imshow(spinsfinal[-1], cmap='summer')  
 
 # Porcentajes de spins 1 y -1
 numerodespins = N * N
