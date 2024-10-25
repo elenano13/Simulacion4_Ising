@@ -15,13 +15,14 @@ def inicializar_spins(N):
 
 spinsini = inicializar_spins(N)
 
-# Visualize the initial lattice 
+# Visualizar configuración inicial 
 plt.imshow(spinsini, cmap='summer') 
 plt.title('Configuración inicial') 
 plt.colorbar() 
 plt.show()
 
 def energia(array_spins):
+    #Se utiliza wrap para simular las condiciones periódicas del lattice
     kern = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]])
     arr = -array_spins * convolve(array_spins, kern, mode='wrap')
     return arr.sum()
@@ -64,10 +65,9 @@ def metropolis(spin_arr, times, beta, energia):
 
     return spinsnetos, energianeta, spin_arr
 
-# Initial energy
 energia_inicial = energia(spinsini)
 
-# Number of temperature points
+
 temperaturas = np.linspace(0.1, 50.0, 20)
 energiaspromedio = []
 magnetizacionespromedio = []
@@ -89,17 +89,17 @@ for T in temperaturas:
     energiaspromedio.append(energia_promedio)
     magnetizacionespromedio.append(magnetizacion_promedio)
 
-    # Susceptibility and Heat Capacity calculations
+    # Para calcular susceptibilidades y capacidades calorídicas
     magnetizacion_cuadrado = np.mean(spins[pasos_equi:] ** 2)
     energia_cuadrado = np.mean(energias[pasos_equi:] ** 2)
     
-    susceptibility = (magnetizacion_cuadrado - magnetizacion_promedio ** 2) * beta
-    heat_capacity = (energia_cuadrado - energia_promedio ** 2) * beta ** 2
+    susceptibilidad = (magnetizacion_cuadrado - magnetizacion_promedio ** 2) * beta
+    capacidad_calo = (energia_cuadrado - energia_promedio ** 2) * beta ** 2
 
-    susceptibilidades.append(susceptibility)
-    capacidadescalorificas.append(heat_capacity)
+    susceptibilidades.append(susceptibilidad)
+    capacidadescalorificas.append(capacidad_calo)
 
-# Plot Energy vs Temperature
+# Energía vs Temp
 plt.figure()
 plt.plot(temperaturas, energiaspromedio, marker='o')
 plt.title('Energía promedio vs Temperatura')
@@ -108,7 +108,7 @@ plt.ylabel('Energía promedio')
 plt.grid()
 plt.show()
 
-# Plot Magnetization vs Temperature
+# Mag vs Temp
 plt.figure()
 plt.plot(temperaturas, magnetizacionespromedio, marker='o', color='orange')
 plt.title('Magnetización promedio vs Temperatura')
@@ -117,7 +117,7 @@ plt.ylabel('Magnetización promedio')
 plt.grid()
 plt.show()
 
-# Plot Susceptibility vs Temperature
+# Susceptibilidad vs Temp
 plt.figure()
 plt.plot(temperaturas, susceptibilidades, marker='o', color='green')
 plt.title('Susceptibilidad vs Temperatura')
@@ -126,7 +126,7 @@ plt.ylabel('Susceptibilidad')
 plt.grid()
 plt.show()
 
-# Plot Heat Capacity vs Temperature
+# CC vs Temp
 plt.figure()
 plt.plot(temperaturas, capacidadescalorificas, marker='o', color='red')
 plt.title('Capacidad Calorífica vs Temperatura')
@@ -135,18 +135,18 @@ plt.ylabel('Capacidad Calorífica')
 plt.grid()
 plt.show()
 
-# Plot the final lattice
+# Coniguración final
 plt.figure()
 plt.imshow(spinsfinal[-1], cmap='summer')  # Visualize the last configuration
 
-# Calculate percentages of spins +1 and -1
+# Porcentajes de spins 1 y -1
 numerodespins = N * N
 positivos = np.sum(spinsfinal[-1] == 1)
 negativos = np.sum(spinsfinal[-1] == -1)
 porcentajepositivo = (positivos / numerodespins) * 100
 porcentajenegativo = (negativos / numerodespins) * 100
 
-# Add percentages to the plot
+
 plt.title(f'Configuración final a T = {temperaturas[-1]:.2f}\n'
           f'Porcentaje de spins +1: {porcentajepositivo:.2f}%, '
           f'Porcentaje de spins -1: {porcentajenegativo:.2f}%')
